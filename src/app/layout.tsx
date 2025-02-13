@@ -32,3 +32,13 @@ export default function RootLayout({
     </html>
   );
 }
+
+{
+  /* <div className="bg-white dark:bg-slate-800">
+			<Header />
+			<main className="pt-20 pb-20 mx-auto max-w-3xl min-h-screen px-2 ">
+				{children}
+			</main>
+			<Footer />
+		</div> */
+}
