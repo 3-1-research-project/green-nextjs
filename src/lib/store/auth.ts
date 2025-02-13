@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-// State types
+
 interface AuthState {
   isAuthenticated: boolean;
   userId: string | null;
@@ -8,7 +8,6 @@ interface AuthState {
   logout: () => void;
 }
 
-// useAuthStore
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
