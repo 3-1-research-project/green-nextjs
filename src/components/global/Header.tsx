@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { useAuthStore } from "@/lib/store/auth";
 
 async function getUsername(userId: string) {
-  const res = await fetch(`/api/get-username?id=${userId}`, {
+  const res = await fetch(`/api/user/${userId}`, {
     cache: "no-store",
   });
   if (!res.ok) {

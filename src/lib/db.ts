@@ -22,3 +22,10 @@ export async function getUserByUsername(username: string) {
   client.release();
   return result.rows[0];
 }
+
+export async function getUserById(id: string) {
+  const client = await connectionPool.connect();
+  const result = await client.query(`SELECT * FROM users WHERE id = $1`, [id]);
+  client.release();
+  return result.rows[0];
+}

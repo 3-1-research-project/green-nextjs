@@ -1,6 +1,4 @@
-// app/api/get-username/route.js
-
-import { getUserByUsername } from "@/lib/db";
+import { getUserById } from "@/lib/db";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -12,7 +10,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const user = await getUserByUsername(userId);
+    const user = await getUserById(userId);
 
     if (!user) {
       return new Response("User not found", { status: 404 });
