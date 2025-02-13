@@ -1,3 +1,5 @@
+"use client";
+
 import { useAuthStore } from "@/lib/store/auth";
 
 export default function PublicTimeline() {
@@ -5,7 +7,11 @@ export default function PublicTimeline() {
   return (
     <div>
       <h1>Public Timeline</h1>
-      {isAuthenticated && <p>Logged in as {userId}</p>}
+      {isAuthenticated ? (
+      <p>You are logged in as {userId}</p>
+      ) : (
+      <p>You are not logged in</p>
+      )}
     </div>
   );
 }
