@@ -2,16 +2,22 @@ import { z } from "zod";
 
 const LoginSchema = z.object({
   username: z.string(),
-  password: z.string().min(8),
+  password: z.string(), //.min(8),
 });
 
 type LoginSchemaType = z.infer<typeof LoginSchema>;
 
-const RegisterSchema = z.object({
-  username: z.string().min(3),
-  password: z.string().min(8),
-  password2: z.string().min(8),
-});
+const RegisterSchema = z
+  .object({
+    username: z.string(), //.min(3),
+    email: z.string().email(),
+    password: z.string(), //.min(8),
+    password2: z.string(), //.min(8),
+  })
+  .refine((data) => data.password === data.password2, {
+    message: "Passwords do not match",
+    path: ["password2"],
+  });
 type RegisterSchemaType = z.infer<typeof RegisterSchema>;
 
 export { LoginSchema, RegisterSchema };

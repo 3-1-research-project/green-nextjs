@@ -12,17 +12,32 @@ const connectionPool = new Pool({
   port: 5432,
 });
 
-export async function getUserByUsername(username: string): Promise<{
-  id: string;
-  username: string;
-  pw_hash: string;
-  }> {
-  const client = await connectionPool.connect();
-  const result = await client.query(`SELECT * FROM users WHERE username = $1`, [
-    username,
-  ]);
-  client.release();
-  return result.rows[0] as { id: string; username: string; pw_hash: string };
+export async function getUserByUsername(username: string): Promise<
+  | {
+      id: string;
+      username: string;
+      email: string;
+      pw_hash: string;
+    }
+  | undefined
+> {
+  try {
+    const client = await connectionPool.connect();
+    const result = await client.query(
+      `SELECT * FROM users WHERE username = $1`,
+      [username]
+    );
+    client.release();
+    return result.rows[0] as {
+      id: string;
+      username: string;
+      email: string;
+      pw_hash: string;
+    };
+  } catch (error) {
+    console.log("Failed to fetch user: ", error);
+    return;
+  }
 }
 
 export async function getUserById(id: string) {
@@ -32,10 +47,14 @@ export async function getUserById(id: string) {
   return result.rows[0];
 }
 
-export async function createUser(username: string, password: string) {
+export async function createUser(
+  username: string,
+  email: string,
+  password: string
+) {
   const client = await connectionPool.connect();
-  const query = `INSERT INTO users (username, pw_hash) VALUES ($1, $2) RETURNING id`;
-  const values = [username, password];
+  const query = `INSERT INTO users (username, email, pw_hash) VALUES ($1, $2, $3) RETURNING id`;
+  const values = [username, email, password];
   const result = await client.query(query, values);
   client.release();
   return result.rows[0];

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { getUserByUsername } from "@/lib/db";
+import { randomUUID } from "crypto";
 
 export async function POST(req: NextRequest) {
   const { username, password } = await req.json();
@@ -20,7 +21,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const sessionToken = `token_${user.id}`;
+  const sessionToken = randomUUID();
 
   const response = NextResponse.json({ message: "Login successful", userId: user.id });
   response.cookies.set("session_token", sessionToken, {

@@ -1,68 +1,40 @@
-// app/register/page.tsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useAuthStore } from "@/lib/store/auth";
+import { register } from '@/app/actions/auth'
+import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const { login } = useAuthStore();
+  const [state, action, pending] = useActionState(register, undefined) 
   const router = useRouter();
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
+  useEffect(() => {
+    if (state?.success) {
+      router.push('/login')
     }
-
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      login(data.userId);
-      router.push("/");
-    } else {
-      setError(data.error || "Unknown error");
-    }
-  };
+  }, [state, router]);
 
   return (
-    <div>
-      <h1>Register</h1>
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <button type="submit">Register</button>
-      </form>
-      {error && <p>{error}</p>}
-    </div>
-  );
+    <form action={action}>
+      <div>
+        <label htmlFor="name">Name</label>
+        <input id="name" name="name" placeholder="Name" />
+      </div>
+      <div>
+        <label htmlFor="email">Email</label>
+        <input id="email" name="email" placeholder="Email" />
+      </div>
+      <div>
+        <label htmlFor="password">Password</label>
+        <input id="password" name="password" type="password" />
+      </div>
+      <div>
+        <label htmlFor="password2">Password2</label>
+        <input id="password2" name="password2" type="password" />
+      </div>
+      <button disabled={pending} type="submit">
+        Sign Up
+      </button>
+    </form>
+  )
 }

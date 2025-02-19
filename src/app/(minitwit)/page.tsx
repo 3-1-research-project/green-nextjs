@@ -1,17 +1,14 @@
-"use client";
+//import { verifySession } from "@/lib/session";
 
-import { useAuthStore } from "@/lib/store/auth";
-
-export default function PublicTimeline() {
-  const { isAuthenticated, userId } = useAuthStore();
+export default async function PublicTimeline() {
+  // const session = await verifySession()
+  // const user = session?.user;
   return (
     <div>
       <h1>Public Timeline</h1>
-      {isAuthenticated ? (
-      <p>You are logged in as {userId}</p>
-      ) : (
-      <p>You are not logged in</p>
-      )}
+      {/* {user && (
+        <p>You are logged in as {user.username}</p>
+      )} */}
     </div>
   );
 }
