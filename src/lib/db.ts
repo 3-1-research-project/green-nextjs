@@ -3,66 +3,77 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const connectionPool = new Pool({
+const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DATABASE,
-  password: process.env.POSTGRES_PASSWORD,
-  port: 5432,
 });
 
-export async function getUserByUsername(username: string): Promise<
-  | {
-      id: string;
-      username: string;
-      email: string;
-      pw_hash: string;
-    }
-  | undefined
-> {
+export async function getUserByUsername(username: string) {
+  const client = await pool.connect();
+
   try {
-    const client = await connectionPool.connect();
-    const result = await client.query(
-      `SELECT * FROM users WHERE username = $1`,
+    const { rows } = await client.query(
+      `SELECT id, username, email, pw_hash FROM users WHERE username = $1`,
       [username]
     );
-    client.release();
-    return result.rows[0] as {
-      id: string;
-      username: string;
-      email: string;
-      pw_hash: string;
-    };
+    return rows[0] || undefined;
   } catch (error) {
-    console.log("Failed to fetch user: ", error);
-    return;
+    console.error("Error fetching user by username");
+    throw error;
+  } finally {
+    client.release();
   }
 }
 
 export async function getUserById(id: string) {
-  const client = await connectionPool.connect();
-  const result = await client.query(`SELECT * FROM users WHERE id = $1`, [id]);
-  client.release();
-  return result.rows[0];
+  const client = await pool.connect();
+
+  try {
+    const { rows } = await client.query(
+      `SELECT id, username, email, pw_hash FROM users WHERE id = $1`,
+      [id]
+    );
+    return rows[0] || undefined;
+  } catch (error) {
+    console.error("Error fetching user by ID");
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 export async function createUser(
   username: string,
   email: string,
-  password: string
+  pw_hash: string
 ) {
-  const client = await connectionPool.connect();
-  const query = `INSERT INTO users (username, email, pw_hash) VALUES ($1, $2, $3) RETURNING id`;
-  const values = [username, email, password];
-  const result = await client.query(query, values);
-  client.release();
-  return result.rows[0];
+  const client = await pool.connect();
+
+  try {
+    const { rows } = await client.query(
+      `INSERT INTO users (username, email, pw_hash) VALUES ($1, $2, $3) RETURNING id`,
+      [username, email, pw_hash]
+    );
+    return rows[0];
+  } catch (error) {
+    console.error("Error creating user");
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 export async function showUsers() {
-  const client = await connectionPool.connect();
-  const result = await client.query(`SELECT * FROM users`);
-  client.release();
-  return result.rows;
+  const client = await pool.connect();
+
+  try {
+    const { rows } = await client.query(
+      `SELECT id, username, email FROM users`
+    );
+    return rows;
+  } catch (error) {
+    console.error("Error fetching users");
+    throw error;
+  } finally {
+    client.release();
+  }
 }

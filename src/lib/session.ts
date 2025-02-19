@@ -8,7 +8,7 @@ import { cache } from "react";
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
-export async function encrypt(payload: { user: User; expiresAt: Date }) {
+async function encrypt(payload: { user: User; expiresAt: Date }) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -16,23 +16,24 @@ export async function encrypt(payload: { user: User; expiresAt: Date }) {
     .sign(encodedKey);
 }
 
-export async function decrypt(session: string | undefined = "") {
+async function decrypt(session?: string) {
+  if (!session) return null;
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     });
     return payload as { user: User; expiresAt: Date };
   } catch (error) {
-    console.log("Failed to verify session: ", error);
+    console.error("Session verification failed:", error);
+    return null;
   }
 }
 
 export async function createSession(user: User) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const session = await encrypt({ user, expiresAt });
-  const cookieStore = await cookies();
 
-  cookieStore.set("session", session, {
+  (await cookies()).set("session", session, {
     httpOnly: true,
     secure: true,
     expires: expiresAt,
@@ -42,21 +43,15 @@ export async function createSession(user: User) {
 }
 
 export async function destroySession() {
-  const cookieStore = await cookies();
-  cookieStore.delete("session");
+  (await cookies()).delete("session");
 }
 
 export const verifySession = cache(async () => {
-  const cookie = (await cookies()).get("session")?.value;
-  if (!cookie) {
-    return { isAuth: false };
-  }
+  const sessionCookie = (await cookies()).get("session")?.value;
+  if (!sessionCookie) return { isAuth: false };
 
-  const session = await decrypt(cookie);
-
-  if (!session?.user) {
-    return { isAuth: false };
-  }
+  const session = await decrypt(sessionCookie);
+  if (!session?.user) return { isAuth: false };
 
   return { isAuth: true, user: session.user };
 });

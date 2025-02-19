@@ -13,46 +13,61 @@ interface AuthState {
 }
 
 export async function register(prevState: AuthState | undefined, formData: FormData): Promise<AuthState> {
-    const validatedFields = RegisterSchema.safeParse({
+    const validation = RegisterSchema.safeParse({
         username: formData.get('name'),
         email: formData.get('email'),
         password: formData.get('password'),
         password2: formData.get('password2')
     });
 
-    if (!validatedFields.success) {
+    if (!validation.success) {
         return {
-            error: validatedFields.error.errors[0].message,
+            error: validation.error.errors[0].message,
         };
     }
 
-    const { username, email, password } = validatedFields.data;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await createUser(username, email, hashedPassword);
+    const { username, email, password } = validation.data;
 
-    return { success: true };
+    try {
+        const existingUser = await getUserByUsername(username);
+        if (existingUser) {
+            return { error: "Username is already taken." };
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await createUser(username, email, hashedPassword);
+        return { success: true };
+    } catch (error) {
+        console.error("User creation failed:", error);
+        return { error: "Something went wrong. Please try again." };
+    }
 }
 
 export async function login(prevState: AuthState | undefined, formData: FormData): Promise<AuthState> {
-    const validatedFields = LoginSchema.safeParse({
+    const validation = LoginSchema.safeParse({
         username: formData.get('username'),
         password: formData.get('password'),
     });
 
-    if (!validatedFields.success) {
+    if (!validation.success) {
         return { error: "Invalid credentials" };
     }
 
-    const { username, password } = validatedFields.data;
-    const user = await getUserByUsername(username);
+    const { username, password } = validation.data;
 
-    if (!user || !(await bcrypt.compare(password, user.pw_hash))) {
-        return { error: "Invalid credentials" };
+    try {
+        const user = await getUserByUsername(username);
+        if (!user || !(await bcrypt.compare(password, user.pw_hash))) {
+            return { error: "Invalid credentials" };
+        }
+
+        await createSession(user);
+        return { success: true, user: user };
+    } catch (error) {
+        console.error("Login failed:", error);
+        return { error: "Something went wrong. Please try again." };
     }
 
-    await createSession(user);
-
-    return { success: true, user: user };
 }
 
 export async function logout() {
