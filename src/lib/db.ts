@@ -12,7 +12,7 @@ export async function getUserByUsername(username: string) {
 
   try {
     const { rows } = await client.query(
-      `SELECT id, username, email, pw_hash FROM users WHERE username = $1`,
+      `SELECT user_id, username, email, pw_hash FROM users WHERE username = $1`,
       [username]
     );
     return rows[0] || undefined;
@@ -29,7 +29,7 @@ export async function getUserById(id: string) {
 
   try {
     const { rows } = await client.query(
-      `SELECT id, username, email, pw_hash FROM users WHERE id = $1`,
+      `SELECT user_id, username, email, pw_hash FROM users WHERE user_id = $1`,
       [id]
     );
     return rows[0] || undefined;
@@ -50,7 +50,7 @@ export async function createUser(
 
   try {
     const { rows } = await client.query(
-      `INSERT INTO users (username, email, pw_hash) VALUES ($1, $2, $3) RETURNING id`,
+      `INSERT INTO users (username, email, pw_hash) VALUES ($1, $2, $3) RETURNING user_id`,
       [username, email, pw_hash]
     );
     return rows[0];
@@ -67,7 +67,7 @@ export async function showUsers() {
 
   try {
     const { rows } = await client.query(
-      `SELECT id, username, email FROM users`
+      `SELECT user_id, username, email FROM users`
     );
     return rows;
   } catch (error) {
