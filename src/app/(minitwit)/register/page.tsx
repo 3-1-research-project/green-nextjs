@@ -1,6 +1,6 @@
 'use client'
 
-import { register } from '@/app/actions/auth'
+import { register } from '@/actions/auth'
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
