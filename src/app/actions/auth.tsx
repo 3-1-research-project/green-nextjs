@@ -50,7 +50,7 @@ export async function login(prevState: AuthState | undefined, formData: FormData
         return { error: "Invalid credentials" };
     }
 
-    await createSession(user);
+    await createSession(user.user_id);
 
     return { success: true, user: user };
 }
