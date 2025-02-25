@@ -12,7 +12,7 @@ export default function SignOutButton({ username }: { username: string }) {
     };
     return (
         <button onClick={handleSignOut}>
-            Sign Out [{username}]
+            sign out [{username}]
         </button>
     )
 }

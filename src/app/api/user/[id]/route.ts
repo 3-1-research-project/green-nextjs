@@ -1,4 +1,4 @@
-import { getUserById } from "@/lib/db";
+import { getUserById } from "@/lib/db/users";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {

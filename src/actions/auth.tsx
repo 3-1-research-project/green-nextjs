@@ -1,7 +1,7 @@
 "use server";
 
 import bcrypt from 'bcrypt';
-import { createUser, getUserByUsername } from '@/lib/db';
+import { createUser, getUserByUsername } from '@/lib/db/users';
 import { LoginSchema, RegisterSchema } from '@/types/auth.type';
 import { User } from '@/types/user.type';
 import { createSession, destroySession } from '@/lib/session';

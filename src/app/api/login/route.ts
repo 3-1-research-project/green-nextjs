@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import { getUserByUsername } from "@/lib/db";
+import { getUserByUsername } from "@/lib/db/users";
 import { randomUUID } from "crypto";
 
 export async function POST(req: NextRequest) {

@@ -1,4 +1,4 @@
-import { showUsers } from "@/lib/db";
+import { showUsers } from "@/lib/db/users";
 
 export async function GET() {
 

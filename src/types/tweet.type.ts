@@ -1,12 +1,10 @@
 import { z } from "zod";
 
 export type Tweet = {
-  CreatedAt: string;
-  DeledtedAt: string | null;
-  UpdatedAt: string | null;
-  ID: number;
+  id: number;
   author_id: number;
   author_name: string;
+  author_email: string;
   text: string;
   pub_date: number;
   flagged: number;
@@ -14,7 +12,6 @@ export type Tweet = {
 
 const postTweetSchema = z.object({
   message: z.string(),
-  userId: z.string(),
 });
 
 type PostTweetSchemaType = z.infer<typeof postTweetSchema>;
