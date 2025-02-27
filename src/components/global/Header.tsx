@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { verifySession } from "@/lib/session";
-import SignOutButton from "../buttons/SignOutButton";
+import SignOutButton from "../SignOutButton";
 
 export default async function Header() {
   const session = await verifySession();

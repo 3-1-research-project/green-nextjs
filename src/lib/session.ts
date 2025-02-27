@@ -8,7 +8,7 @@ import { getUserById } from "./db/users";
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
-async function encrypt(userId: string, expiresAt: Date) {
+async function encrypt(userId: number, expiresAt: Date) {
   return new SignJWT({userId})
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -29,7 +29,7 @@ async function decrypt(session?: string) {
   }
 }
 
-export async function createSession(userId: string) {
+export async function createSession(userId: number) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const session = await encrypt(userId, expiresAt);
 

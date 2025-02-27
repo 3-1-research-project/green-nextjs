@@ -1,4 +1,4 @@
-import { Messages } from "@/components/messages/Messages";
+import { Messages } from "@/components/MessageList";
 import { getMessagesForPublicTimeline } from "@/lib/db/messages";
 
 export default async function PublicTimeline () {

@@ -52,7 +52,7 @@ export async function login(prevState: AuthState | undefined, formData: FormData
 
     await createSession(user.user_id);
 
-    return { success: true, user: user };
+    return { success: true, user: user};
 }
 
 export async function logout() {

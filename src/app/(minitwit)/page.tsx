@@ -1,5 +1,5 @@
-import Twitbox from "@/components/forms/Twitbox";
-import { Messages } from "@/components/messages/Messages";
+import Twitbox from "@/components/Twitbox";
+import { Messages } from "@/components/MessageList";
 import { getMessagesForPublicTimeline } from "@/lib/db/messages";
 import { verifySession } from "@/lib/session";
 import { redirect } from "next/navigation";

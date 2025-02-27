@@ -1,6 +1,11 @@
 import { pool } from ".";
 
-export async function getUserByUsername(username: string) {
+export async function getUserByUsername(username: string): Promise<{
+    user_id: number;
+    username: string;
+    email: string;
+    pw_hash: string;
+}> {
     const client = await pool.connect();
 
     try {

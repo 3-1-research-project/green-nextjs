@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   const sessionToken = randomUUID();
 
-  const response = NextResponse.json({ message: "Login successful", userId: user.id });
+  const response = NextResponse.json({ message: "Login successful", userId: user.user_id });
   response.cookies.set("session_token", sessionToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

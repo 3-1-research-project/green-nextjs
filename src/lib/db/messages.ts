@@ -44,3 +44,31 @@ export async function createMessage(text: string, author_id: number) {
         client.release();
     }
 }
+
+export async function getMessagesByUser(author_id: number) {
+    const client = await pool.connect();
+
+    try {
+        const { rows } = await client.query(
+            `SELECT 
+                m.message_id AS id, 
+                m.text, 
+                m.author_id, 
+                u.username AS author_name, 
+                u.email AS author_email,
+                m.pub_date,
+                m.flagged 
+            FROM messages m
+            JOIN users u ON m.author_id = u.user_id
+            WHERE m.author_id = $1
+            ORDER BY m.pub_date DESC`,
+            [author_id]
+        );
+        return rows;
+    } catch (error) {
+        console.error("Error fetching messages");
+        throw error;
+    } finally {
+        client.release();
+    }
+}
