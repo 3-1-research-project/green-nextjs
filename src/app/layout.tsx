@@ -31,15 +31,15 @@ export default async function RootLayout({
   
   return (
     <html lang="en">
-
-       <body>
-      <div className={`${geistSans.variable} ${geistMono.variable} antialiased page`}>
-        <Header />
-        <FlashMessage messages={flashMessages} />
-        <div className="body" >
-        {children}</div>
-        <Footer />
-        </div>
+      <body>
+        <div className={`${geistSans.variable} ${geistMono.variable} antialiased page`}>
+          <Header />
+          <FlashMessage initialMessages={flashMessages} />
+          <div className="body" >
+            {children}
+          </div>
+          <Footer />
+          </div>
         </body>
     </html>
   );

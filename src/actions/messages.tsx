@@ -34,6 +34,6 @@ export async function twit(prevState: MessageState | undefined, formData: FormDa
 
     await setFlashMessage(flashMessages.tweetSuccess);
 
-    revalidatePath('/');
+    revalidatePath('');
     return { success: true };
 }

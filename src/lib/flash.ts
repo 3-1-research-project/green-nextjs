@@ -1,3 +1,5 @@
+"use server";
+
 import { cookies } from "next/headers";
 
 const FLASH_COOKIE_NAME = "flash_messages";
